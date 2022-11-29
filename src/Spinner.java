@@ -21,12 +21,12 @@ public class Spinner {
 	 * based on the given probabilities.
 	 */
 	public String numToWord(double spinNumber){	
-		int index = 1;
-		double low = 0;
+		int index = 0;		// Should be 0 instead of 1
+		double low = 0;		// low should be 1 instead of 0 to not allow the dice to roll a 0 (BUG 3)
 		boolean done = false;
 		String result = "";
-		while(!done){
-			double high = probabilities[index] + low;
+		while(!done){									// could be an issue here with the while loop running too many times
+			double high = probabilities[index] + low;	// causing for an out-of-bounds exception (BUG 2)
 			if(spinNumber>= low && spinNumber< high){
 				result = sections[index];
 				done = true;

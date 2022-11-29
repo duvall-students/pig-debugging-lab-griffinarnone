@@ -1,16 +1,17 @@
 import java.util.Random;
 
 public class Game {
-	private Player player1;
-	private Player player2;
+	
+	private Player player1 = new GUIPlayer();
+	private Player player2 = new ComputerPlayer();
 	private Random die;
 	private Spinner spinner;
 	private final String LOSER_SPIN = "grunt";
 	private final int LOSER_ROLL = 1;
 	
 	public Game(){
-		Player player1 = new GUIPlayer();
-		Player player2 = new ComputerPlayer();
+//		Player player1 = new GUIPlayer();              The winner() method did not like when player1 and player2 were initialized within Game().
+//		Player player2 = new ComputerPlayer();         To fix that, I moved it to up simply within the class outside of any method. (BUG 1)
 		die = new Random();
 		spinner = new Spinner();
 	}
@@ -35,6 +36,7 @@ public class Game {
 		printEndGameMessage();
 	}
 	
+	
 	/*
 	 * One player's turn.  Ends because
 	 * - roll a 1
@@ -43,7 +45,7 @@ public class Game {
 	 * 
 	 * Return the number of points to add to the player
 	 */
-	public int takeATurn(Player whoseTurn){
+	public int takeATurn(Player whoseTurn){		// Possible error within this method for BUG 6, need to implement GRUNT point manipulation
 		int roundScore = 0;
 		boolean keepGoing = true;
 		printStartRoundMessage(whoseTurn);
@@ -58,7 +60,7 @@ public class Game {
 			}
 			else if(spin == LOSER_SPIN.toUpperCase()){
 				System.out.println("Too bad!  Lose all your points.");
-				whoseTurn.resetScore();
+				whoseTurn.resetScore();				// A fix for BUG 7, resetting of the players points
 				return 0;
 			}
 			else{
@@ -72,7 +74,10 @@ public class Game {
 	
 	// True if one of the players has won the game.
 	public boolean winner(){
-		return player1.hasWon() && player2.hasWon();
+		if (player1.myScore >= 0 && player2.myScore >= 0) {	// player score should be greater than or equal to 0 (BUG 4)
+			return player1.hasWon() || player2.hasWon();	// should be an OR here as well instead of AND
+		}
+		return false;
 	}
 	
 	/* 
